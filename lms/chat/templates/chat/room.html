@@ -1,12 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Chat room for "{{ course.title }}"{% endblock %}
+{% block title %}Chat room for "{{ course.title }}" {% endblock %}
+
 {% block content %}
+<div id="history"></div>
 <div id="chat">
 </div>
 <div id="chat-input">
 <input id="chat-message-input" type="text">
 <input id="chat-message-submit" type="submit" value="send">
 </div>
+
 {% endblock %}
 {% block domready %}
 var url = 'ws://' + window.location.host +
@@ -52,4 +55,14 @@ if (e.which === 13) {
 $submit.click();
 }
 });
+var $history = $('#history');
+{% for h in history%}
+{% ifequal h.sender__username user %}
+$history.append('<b>Me</b> ')
+{% else %}
+$history.append('<b>{{h.sender__username}}</b> ')
+{%endifequal%}
+$history.append('{{h.sent_date}}<br>')
+$history.append('{{h.message}}<br><br>')
+{% endfor %}
 {% endblock %}

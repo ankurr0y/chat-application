@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
+from .models import Messages
 
 @login_required
 def course_chat_room(request, course_id):
@@ -8,4 +9,5 @@ def course_chat_room(request, course_id):
         course = request.user.courses_joined.get(id=course_id)
     except:
         return HttpResponseForbidden()
-    return render(request, 'chat/room.html', {'course': course})
+    history = Messages.objects.filter(course_id=course_id).values("sender__username", "sent_date", "message").reverse()
+    return render(request, 'chat/room.html', {'course': course, 'history': history, 'user': str(request.user)})
