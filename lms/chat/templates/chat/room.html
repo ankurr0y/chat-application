@@ -2,8 +2,9 @@
 {% block title %}Chat room for "{{ course.title }}" {% endblock %}
 
 {% block content %}
-<div id="history"></div>
+
 <div id="chat">
+<div id="history"></div>
 </div>
 <div id="chat-input">
 <input id="chat-message-input" type="text">
@@ -12,7 +13,7 @@
 
 {% endblock %}
 {% block domready %}
-var url = 'ws://' + window.location.host +
+var url = 'wss://' + window.location.host +
         '/ws/chat/room/' + '{{ course.id }}/';
 var chatSocket = new WebSocket(url);
 chatSocket.onmessage = function(e) {
@@ -58,11 +59,14 @@ $submit.click();
 var $history = $('#history');
 {% for h in history%}
 {% ifequal h.sender__username user %}
-$history.append('<b>Me</b> ')
+$history.append('<div class="message me">' +
+'<strong>Me</strong> ' +
+'<span class="date">{{h.sent_date}}</span><br>{{h.message}}</div>');
 {% else %}
-$history.append('<b>{{h.sender__username}}</b> ')
+$history.append('<div class="message">' +
+'<strong>{{h.sender__username}}</strong> ' +
+'<span class="date">{{h.sent_date}}</span><br>{{h.message}}</div>');
 {%endifequal%}
-$history.append('{{h.sent_date}}<br>')
-$history.append('{{h.message}}<br><br>')
+
 {% endfor %}
 {% endblock %}
