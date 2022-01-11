@@ -1,2 +1,3 @@
 # chat-application
-For the intern project
+
+AN application created with live chat functionaliyt and capability. Uses Django with Daphne.
